@@ -1,0 +1,30 @@
+from sklearn.datasets import load_breast_cancer
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import GridSearchCV, validation_curve
+import matplotlib.pyplot as plt
+import numpy as np
+
+X, y = load_breast_cancer(return_X_y=True)
+
+dt = DecisionTreeClassifier()
+
+# Grid Search
+params = {"max_depth":[2,4,6,8], "min_samples_split":[2,5,10]}
+grid = GridSearchCV(dt, params, cv=5)
+grid.fit(X, y)
+
+print("Best Params:", grid.best_params_)
+
+# Validation Curve (overfitting check)
+depths = [1,2,4,6,8]
+train, val = validation_curve(dt, X, y,
+                               param_name="max_depth",
+                               param_range=depths,
+                               cv=5)
+
+plt.plot(depths, train.mean(axis=1), label="Train")
+plt.plot(depths, val.mean(axis=1), label="Validation")
+plt.xlabel("Max Depth")
+plt.ylabel("Accuracy")
+plt.legend()
+plt.show()
