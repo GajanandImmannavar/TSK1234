@@ -1,0 +1,24 @@
+from sklearn.linear_model import LinearRegression,Lasso,Ridge,ElasticNet
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import r2_score
+import numpy as np
+
+x = np.random.rand(300,5)
+y = x @[1,-2,0.4,4,3]+np.random.randn(300)
+
+x = StandardScaler().fit_transform(x)
+xtr,xte,ytr,yte = train_test_split(x,y)
+
+models = {
+
+    "Linear" : LinearRegression(),
+    "Ridge" : Ridge(alpha=1),
+    "Lasso" : Lasso(alpha=0.1),
+    "ElasticNet" : ElasticNet(alpha=0.1)
+}
+
+for name, m in models.items():
+  m.fit(xtr,ytr)
+  print(name,r2_score(yte,m.predict(xte)), m.coef_)
+
